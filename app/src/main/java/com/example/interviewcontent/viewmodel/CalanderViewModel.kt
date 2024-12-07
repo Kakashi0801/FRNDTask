@@ -37,7 +37,7 @@ class CalanderViewModel(val calanderRepository: CalanderRepository) : ViewModel(
         submitDailyTask(123,taskDetail)
     }
     fun addDailyTask(date: String, title: String?) {
-
+        // Implement functionality to add a task
     }
 
     fun generateDaysForMonth(selectedYear: Int, selectedMonth: Int){
@@ -65,10 +65,11 @@ class CalanderViewModel(val calanderRepository: CalanderRepository) : ViewModel(
     }
 
     fun changeTheCalenderView(changedBackwards: Boolean, selectedYear: Int, selectedMonth: Int) {
-        var updatedMonth = -1
-        var updatedYear = 0
-        if(changedBackwards){
-            if(selectedMonth == Calendar.JANUARY ){
+        val updatedMonth: Int
+        val updatedYear: Int
+
+        if (changedBackwards) {
+            if (selectedMonth == Calendar.JANUARY) {
                 updatedMonth = Calendar.DECEMBER
                 updatedYear = selectedYear -1
             }else{

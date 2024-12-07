@@ -48,9 +48,11 @@ class CalanderFragment(): Fragment(R.layout.fragment_calander), View.OnClickList
     private fun setLiveDataObservers() {
         viewModel.mUpdatedMonth.observe(viewLifecycleOwner) {
             mSelectedMonth = it
+            binding.monthLabel.text = viewModel.getMonthName(mSelectedMonth)
         }
         viewModel.mUpdatedYear.observe(viewLifecycleOwner) {
             mSelectedYear = it
+            binding.yearLabel.text = mSelectedYear.toString()
         }
         viewModel.generateDaysForMonth(mSelectedYear,mSelectedMonth)
         viewModel.mDaysList.observe(viewLifecycleOwner) {
@@ -63,6 +65,10 @@ class CalanderFragment(): Fragment(R.layout.fragment_calander), View.OnClickList
         binding.addIcon.setOnClickListener(this)
         binding.leftArrow.setOnClickListener(this)
         binding.rightArrow.setOnClickListener(this)
+        binding.monthLabel.setOnClickListener(this)
+        binding.yearLabel.setOnClickListener(this)
+        binding.monthLabel.text = viewModel.getMonthName(mSelectedMonth)
+        binding.yearLabel.text = mSelectedYear.toString()
     }
 
     override fun onClick(view: View?) {

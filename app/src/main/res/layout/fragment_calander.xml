@@ -12,36 +12,62 @@
             android:layout_height="wrap_content"
             android:id="@+id/year_title_linear"
             android:orientation="horizontal"
-            android:weightSum="1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            >
+            app:layout_constraintTop_toTopOf="parent">
 
-           <ImageView
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:id="@+id/left_arrow"
-               android:layout_weight="0.2"
-               android:rotation="180"
-               android:src="@drawable/arrow_right_24"/>
+            <!-- Left Arrow ImageView -->
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/left_arrow"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:rotation="180"
+                android:src="@drawable/arrow_right_24" />
 
+            <!-- Spacer to push TextViews to the center -->
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <!-- Month Label TextView -->
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:id="@+id/month_label"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.6"
+                android:layout_weight="0"
                 android:textAlignment="center"
-                android:text="@string/calendar"
-                />
+                android:text="@string/calendar" />
 
+            <View
+                android:layout_width="8dp"
+                android:layout_height="0dp" />
+
+            <!-- Year Label TextView -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:id="@+id/year_label"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:textAlignment="center"
+                android:text="@string/calendar" />
+
+            <!-- Spacer to push TextViews to the center -->
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <!-- Right Arrow ImageView -->
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/right_arrow"
-                android:layout_weight="0.2"
-                android:src="@drawable/arrow_right_24"
-                />
+                android:layout_weight="1"
+                android:gravity="end"
+                android:src="@drawable/arrow_right_24" />
 
         </LinearLayout>
 

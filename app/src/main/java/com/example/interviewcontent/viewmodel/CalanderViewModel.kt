@@ -3,6 +3,7 @@ package com.example.interviewcontent.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.interviewcontent.repository.CalanderRepository
+import java.text.DateFormatSymbols
 import java.util.Calendar
 
 class CalanderViewModel(calanderRepository: CalanderRepository) : ViewModel() {
@@ -58,6 +59,13 @@ class CalanderViewModel(calanderRepository: CalanderRepository) : ViewModel() {
                 updatedYear = selectedYear
             }
         }
+        mUpdatedMonth.value = updatedMonth
+        mUpdatedYear.value = updatedYear
        generateDaysForMonth(updatedYear,updatedMonth)
+    }
+
+    fun getMonthName(monthIndex: Int): String {
+        val monthNames = DateFormatSymbols().months
+        return if (monthIndex in 0..11) monthNames[monthIndex] else "Invalid Month"
     }
 }

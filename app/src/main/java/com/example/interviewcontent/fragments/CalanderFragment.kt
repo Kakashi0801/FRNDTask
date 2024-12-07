@@ -42,11 +42,21 @@ class CalanderFragment(): Fragment(R.layout.fragment_calander), View.OnClickList
         super.onViewCreated(view, savedInstanceState)
         viewModel = (activity as CalanderActivity).calanderViewModel
         setClickListeners()
+        setLiveDataObservers()
+    }
+
+    private fun setLiveDataObservers() {
+        viewModel.mUpdatedMonth.observe(viewLifecycleOwner) {
+            mSelectedMonth = it
+        }
+        viewModel.mUpdatedYear.observe(viewLifecycleOwner) {
+            mSelectedYear = it
+        }
         viewModel.generateDaysForMonth(mSelectedYear,mSelectedMonth)
-        viewModel.mDaysList.observe(viewLifecycleOwner,{
+        viewModel.mDaysList.observe(viewLifecycleOwner) {
             binding.customCalendarView.layoutManager = GridLayoutManager(context, 7)
             binding.customCalendarView.adapter = CustomCalenderViewAdapter(it)
-        })
+        }
     }
 
     private fun setClickListeners() {

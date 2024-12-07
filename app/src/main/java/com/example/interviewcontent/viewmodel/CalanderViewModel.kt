@@ -2,15 +2,40 @@ package com.example.interviewcontent.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.interviewcontent.models.CalenderResponse
+import com.example.interviewcontent.models.StatusResponse
+import com.example.interviewcontent.models.Task
+import com.example.interviewcontent.models.TaskDetail
 import com.example.interviewcontent.repository.CalanderRepository
+import com.example.interviewcontent.resources.Resources
+import kotlinx.coroutines.launch
+import retrofit2.Response
 import java.text.DateFormatSymbols
 import java.util.Calendar
 
-class CalanderViewModel(calanderRepository: CalanderRepository) : ViewModel() {
+class CalanderViewModel(val calanderRepository: CalanderRepository) : ViewModel() {
 
     var mDaysList = MutableLiveData<List<String>>()
     var mUpdatedMonth = MutableLiveData<Int>()
     var mUpdatedYear = MutableLiveData<Int>()
+
+    val taskDetail = TaskDetail("2024-01-08","Happy Birthday to me (Anshul)",1509,"Anshul's Birthday")
+
+
+    var taskList : MutableLiveData<Resources<CalenderResponse>> = MutableLiveData()
+    var calenderResponse:CalenderResponse? = null
+
+    var submittedTask:MutableLiveData<Resources<StatusResponse>> = MutableLiveData()
+    var submittedTaskResponse:StatusResponse? = null
+
+    var messageDeletion: MutableLiveData<Resources<String>> = MutableLiveData()
+    var messageResponse:String? = null
+
+
+    init {
+        submitDailyTask(123,taskDetail)
+    }
     fun addDailyTask(date: String, title: String?) {
 
     }
@@ -67,5 +92,53 @@ class CalanderViewModel(calanderRepository: CalanderRepository) : ViewModel() {
     fun getMonthName(monthIndex: Int): String {
         val monthNames = DateFormatSymbols().months
         return if (monthIndex in 0..11) monthNames[monthIndex] else "Invalid Month"
+    }
+
+
+    fun getTaskList(userId:Int)= viewModelScope.launch{
+        taskList.postValue(Resources.Loading())
+        val response = calanderRepository.fetchCalendarTaskList(123)
+        taskList.postValue(handleCalenderResponse(response))
+    }
+
+    fun submitDailyTask(userId: Int,taskDetail: TaskDetail)=viewModelScope.launch {
+        submittedTask.postValue(Resources.Loading())
+        val response = calanderRepository.submitDailyTask(123,taskDetail)
+        submittedTask.postValue(handleTaskSubmitResponse(response))
+    }
+
+    fun deleteDailyTask(userId: Int,taskId: Int)=viewModelScope.launch {
+        messageDeletion.postValue(Resources.Loading())
+        val response = calanderRepository.deleteDailyTask(123,taskId)
+        messageDeletion.postValue(handleTaskDeleteResponse(response))
+    }
+
+    private fun handleTaskDeleteResponse(response: Response<StatusResponse>): Resources<String>? {
+        if (response.isSuccessful){
+            response.body().let {ressult->
+                return Resources.Success((messageResponse ?: ressult)?.toString())!!
+            }
+        }
+        return Resources.Error(response.message(),data = null)
+    }
+
+
+    private fun handleCalenderResponse(response: Response<CalenderResponse>):Resources<CalenderResponse>{
+        if (response.isSuccessful){
+            response.body().let {ressult->
+                return Resources.Success(calenderResponse?:ressult)!!
+            }
+        }
+        return Resources.Error(response.message(),data = null)
+    }
+
+
+    private fun handleTaskSubmitResponse(response: Response<StatusResponse>):Resources<StatusResponse>{
+        if (response.isSuccessful){
+            response.body().let {ressult->
+                return Resources.Success(submittedTaskResponse?:ressult)!!
+            }
+        }
+        return Resources.Error(response.message(),data = null)
     }
 }

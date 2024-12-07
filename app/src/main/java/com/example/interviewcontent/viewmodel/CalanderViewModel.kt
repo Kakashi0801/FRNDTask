@@ -11,11 +11,12 @@ class CalanderViewModel(calanderRepository: CalanderRepository) : ViewModel() {
     var mDaysList = MutableLiveData<List<String>>()
     var mUpdatedMonth = MutableLiveData<Int>()
     var mUpdatedYear = MutableLiveData<Int>()
-    fun addDailyTask(date: String, title: String?) {
 
+    fun addDailyTask(date: String, title: String?) {
+        // Implement functionality to add a task
     }
 
-    fun generateDaysForMonth(selectedYear: Int, selectedMonth: Int){
+    fun generateDaysForMonth(selectedYear: Int, selectedMonth: Int) {
         val calendar = Calendar.getInstance()
         calendar.set(Calendar.YEAR, selectedYear)
         calendar.set(Calendar.MONTH, selectedMonth)
@@ -40,28 +41,30 @@ class CalanderViewModel(calanderRepository: CalanderRepository) : ViewModel() {
     }
 
     fun changeTheCalenderView(changedBackwards: Boolean, selectedYear: Int, selectedMonth: Int) {
-        var updatedMonth = -1
-        var updatedYear = 0
-        if(changedBackwards){
-            if(selectedMonth == Calendar.JANUARY ){
+        val updatedMonth: Int
+        val updatedYear: Int
+
+        if (changedBackwards) {
+            if (selectedMonth == Calendar.JANUARY) {
                 updatedMonth = Calendar.DECEMBER
-                updatedYear = selectedYear -1
-            }else{
+                updatedYear = selectedYear - 1
+            } else {
                 updatedMonth = selectedMonth - 1
                 updatedYear = selectedYear
             }
-        }else{
-            if(selectedMonth == Calendar.DECEMBER ){
+        } else {
+            if (selectedMonth == Calendar.DECEMBER) {
                 updatedMonth = Calendar.JANUARY
-                updatedYear = selectedYear +1
-            }else{
-                updatedMonth = selectedMonth+1
+                updatedYear = selectedYear + 1
+            } else {
+                updatedMonth = selectedMonth + 1
                 updatedYear = selectedYear
             }
         }
+
         mUpdatedMonth.value = updatedMonth
         mUpdatedYear.value = updatedYear
-       generateDaysForMonth(updatedYear,updatedMonth)
+        generateDaysForMonth(updatedYear, updatedMonth)
     }
 
     fun getMonthName(monthIndex: Int): String {

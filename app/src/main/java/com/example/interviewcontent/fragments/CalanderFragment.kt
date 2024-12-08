@@ -1,5 +1,6 @@
 package com.example.interviewcontent.fragments
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,6 +10,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -17,15 +19,20 @@ import com.example.interviewcontent.CalanderActivity
 import com.example.interviewcontent.R
 import com.example.interviewcontent.adapters.CustomCalenderViewAdapter
 import com.example.interviewcontent.adapters.MonthViewAdapter
+import com.example.interviewcontent.adapters.OnItemClick
 import com.example.interviewcontent.databinding.FragmentCalanderBinding
 import com.example.interviewcontent.models.CalenderResponse
 import com.example.interviewcontent.models.Task
 import com.example.interviewcontent.models.TaskDetail
 import com.example.interviewcontent.resources.Resources
 import com.example.interviewcontent.viewmodel.CalanderViewModel
+import okhttp3.internal.notify
+import java.lang.ref.WeakReference
+import java.time.LocalDate
 import java.util.Calendar
+import java.util.Date
 
-class CalanderFragment : Fragment(R.layout.fragment_calander), View.OnClickListener {
+class CalanderFragment : Fragment(R.layout.fragment_calander), View.OnClickListener, OnItemClick {
 
     lateinit var viewModel: CalanderViewModel
     lateinit var _binding: FragmentCalanderBinding
@@ -34,6 +41,9 @@ class CalanderFragment : Fragment(R.layout.fragment_calander), View.OnClickListe
     private var taskToAdd = ""
     private var mSelectedYear = 2021
     private var mSelectedMonth = Calendar.DECEMBER
+    var calenderSelectedDate: Int = -1
+    var calenderSelectedMonth: Int = -1
+    var calenderSelectedYear: Int = -1
     private val TAG = "CalanderFragment"
 
     override fun onCreateView(
@@ -63,7 +73,7 @@ class CalanderFragment : Fragment(R.layout.fragment_calander), View.OnClickListe
         }
         viewModel.mDaysList.observe(viewLifecycleOwner) {
             binding.customCalendarView.layoutManager = GridLayoutManager(context, 7)
-            binding.customCalendarView.adapter = CustomCalenderViewAdapter(it,activity)
+            binding.customCalendarView.adapter = CustomCalenderViewAdapter(it, WeakReference(this))
         }
 
         viewModel.taskList.observe(viewLifecycleOwner){response->
@@ -153,5 +163,21 @@ class CalanderFragment : Fragment(R.layout.fragment_calander), View.OnClickListe
 
     private fun showProgressBar() {
         binding.loaderContainer.visibility = View.VISIBLE
+    }
+    override fun didClickItem(date: String) {
+        calenderSelectedDate = date.toIntOrNull() ?: -1
+        calenderSelectedMonth = mSelectedMonth
+        calenderSelectedYear = mSelectedYear
+        binding.customCalendarView.adapter?.notifyDataSetChanged()
+    }
+
+    override fun isSelectedDate(date: String): Boolean {
+        return mSelectedYear == calenderSelectedYear && mSelectedMonth == calenderSelectedMonth && date.toIntOrNull() == calenderSelectedDate
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun isCurrentDate(date: String): Boolean {
+        val currentDate = LocalDate.now()
+        return currentDate.year == mSelectedYear && (currentDate.month.value - 1) == mSelectedMonth && currentDate.dayOfMonth == date.toIntOrNull()
     }
 }

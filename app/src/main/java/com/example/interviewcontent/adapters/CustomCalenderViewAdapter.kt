@@ -1,22 +1,24 @@
 package com.example.interviewcontent.adapters
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.Typeface
-import android.util.Log
+import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.fragment.app.FragmentActivity
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.interviewcontent.R
 import com.example.interviewcontent.fragments.TaskBottomSheetDialog
+import java.lang.ref.WeakReference
 
-class CustomCalenderViewAdapter(private val days: List<String>, private val activity: FragmentActivity?) :
+class CustomCalenderViewAdapter(private val days: List<String>, var delegate: WeakReference<OnItemClick>) :
     RecyclerView.Adapter<CustomCalenderViewAdapter.CalendarViewHolder>() {
-
     inner class CalendarViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val dateText: TextView = view.findViewById(R.id.date_text)
+        val cardView:CardView = view.findViewById(R.id.card_view)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
@@ -25,20 +27,34 @@ class CustomCalenderViewAdapter(private val days: List<String>, private val acti
         return CalendarViewHolder(view)
     }
 
+    @SuppressLint("ResourceAsColor")
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
         val day = days[position]
         holder.dateText.text = day
+        holder.cardView.setBackgroundColor(Color.WHITE)
         if (position < 7) {
             holder.dateText.setTextColor(Color.BLUE)
             holder.dateText.setTypeface(null, Typeface.BOLD)
-        } else if (day.isEmpty()) { // Padding slots
+        } else if (day.isEmpty()) {
             holder.dateText.visibility = View.INVISIBLE
         } else {
             holder.dateText.setTextColor(Color.BLACK)
             holder.dateText.setTypeface(null, Typeface.NORMAL)
         }
 
+        if (delegate.get()?.isCurrentDate(day) == true) {
+            val gradient = GradientDrawable()
+            gradient.setStroke(2, Color.BLUE)
+            holder.cardView.background = gradient
+        }
+
+        if (delegate.get()?.isSelectedDate(day) == true && position >= 7) {
+            holder.cardView.setBackgroundResource(R.color.red)
+            holder.cardView.clipToOutline = true
+        }
+
         holder.itemView.setOnClickListener {
+            delegate.get()?.didClickItem(holder.dateText.text as String)
 //            activity?.let {
 //                val taskBottomSheetDialog = TaskBottomSheetDialog(it, onTaskAdded = {
 //                    Log.d(, "onBindViewHolder: ")
@@ -49,4 +65,9 @@ class CustomCalenderViewAdapter(private val days: List<String>, private val acti
     }
 
     override fun getItemCount(): Int = days.size
+}
+interface OnItemClick {
+    fun didClickItem(date: String)
+    fun isSelectedDate(date: String): Boolean
+    fun isCurrentDate(date: String): Boolean
 }

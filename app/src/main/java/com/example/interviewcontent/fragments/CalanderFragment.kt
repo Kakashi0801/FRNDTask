@@ -65,14 +65,14 @@ class CalanderFragment : Fragment(R.layout.fragment_calander), View.OnClickListe
         viewModel.taskList.observe(viewLifecycleOwner){response->
             when(response){
                 is Resources.Error -> {
-//                    hideProgressBar()
+                   hideProgressBar()
                     if(response.message!=null){
                         Toast.makeText(activity,"Error occured", Toast.LENGTH_LONG)
                     }
                 }
-                is Resources.Loading -> { /*showProgressBar()*/}
+                is Resources.Loading -> { showProgressBar()}
                 is Resources.Success -> {
-                    /*hideProgressBar()*/
+                    hideProgressBar()
                     if(response.data !=null){
                         val monthViewAdapter = MonthViewAdapter(response.data)
                         binding.dailyTaskRv.layoutManager = LinearLayoutManager(context)
@@ -92,7 +92,6 @@ class CalanderFragment : Fragment(R.layout.fragment_calander), View.OnClickListe
 
     override fun onClick(view: View?) {
         when (view?.id) {
-//            R.id.add_icon -> viewModel.addDailyTask(selectedDate, taskToAdd)
             R.id.add_icon-> {
                 val taskBottomSheetDialog = TaskBottomSheetDialog(
                     requireContext(),
@@ -109,26 +108,21 @@ class CalanderFragment : Fragment(R.layout.fragment_calander), View.OnClickListe
     }
 
     private fun setupSpinners() {
-        // Populate Month Spinner
         val months = resources.getStringArray(R.array.months) // Define the months in strings.xml
         val monthAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, months)
         monthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.monthLabel.adapter = monthAdapter
 
-        // Populate Year Spinner (1975 to 2075)
         val years = (1975..2075).toList()
         val yearAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, years)
         yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.yearLabel.adapter = yearAdapter
 
-        // Set default selection
         binding.monthLabel.setSelection(mSelectedMonth)
         binding.yearLabel.setSelection(years.indexOf(mSelectedYear))
 
-        // Trigger initial data load
         viewModel.generateDaysForMonth(mSelectedYear, mSelectedMonth)
 
-        // Set listeners for item selection on spinners
         binding.monthLabel.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 mSelectedMonth = position
@@ -146,5 +140,15 @@ class CalanderFragment : Fragment(R.layout.fragment_calander), View.OnClickListe
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
+
+
+    }
+
+    private fun hideProgressBar() {
+        binding.loaderContainer.visibility = View.GONE
+    }
+
+    private fun showProgressBar() {
+        binding.loaderContainer.visibility = View.VISIBLE
     }
 }

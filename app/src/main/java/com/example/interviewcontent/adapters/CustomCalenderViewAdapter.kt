@@ -2,14 +2,17 @@ package com.example.interviewcontent.adapters
 
 import android.graphics.Color
 import android.graphics.Typeface
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.interviewcontent.R
+import com.example.interviewcontent.fragments.TaskBottomSheetDialog
 
-class CustomCalenderViewAdapter(private val days: List<String>) :
+class CustomCalenderViewAdapter(private val days: List<String>, private val activity: FragmentActivity?) :
     RecyclerView.Adapter<CustomCalenderViewAdapter.CalendarViewHolder>() {
 
     inner class CalendarViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -36,7 +39,12 @@ class CustomCalenderViewAdapter(private val days: List<String>) :
         }
 
         holder.itemView.setOnClickListener {
-
+//            activity?.let {
+//                val taskBottomSheetDialog = TaskBottomSheetDialog(it, onTaskAdded = {
+//                    Log.d(, "onBindViewHolder: ")
+//                })
+//                taskBottomSheetDialog.show()
+//            }
         }
     }
 

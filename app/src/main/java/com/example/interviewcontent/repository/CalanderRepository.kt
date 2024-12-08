@@ -1,6 +1,7 @@
 package com.example.interviewcontent.repository
 
 import com.example.interviewcontent.api.RetrofitInstance
+import com.example.interviewcontent.db.DailyTaskDatabase
 import com.example.interviewcontent.models.CalenderResponse
 import com.example.interviewcontent.models.DeleteTaskRequest
 import com.example.interviewcontent.models.StatusResponse
@@ -9,7 +10,7 @@ import com.example.interviewcontent.models.TaskDetail
 import com.example.interviewcontent.models.TaskRequest
 import retrofit2.Response
 
-class CalanderRepository {
+class CalanderRepository (val db:DailyTaskDatabase){
 
     suspend fun fetchCalendarTaskList(userId: Int): Response<CalenderResponse> {
         val requestBodyUserId = mapOf("user_id" to userId)
@@ -47,4 +48,13 @@ class CalanderRepository {
         }
         return response
     }
+
+
+    suspend fun upsertTaskFromDb(task: Task) =
+        db.getCalenderTaskDao().upsertTask(task)
+
+    suspend fun deleteTaskFromDb(task: Task) =
+        db.getCalenderTaskDao().deleteTask(task)
+
+    fun getSavedArticlesFromDb()= db.getCalenderTaskDao().getAllTasks()
 }

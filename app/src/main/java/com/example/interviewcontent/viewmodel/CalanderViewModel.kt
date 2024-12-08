@@ -142,4 +142,17 @@ class CalanderViewModel(val calanderRepository: CalanderRepository) : ViewModel(
         }
         return Resources.Error(response.message(),data = null)
     }
+
+
+    fun saveDailyTasks(taskList:ArrayList<Task>) = viewModelScope.launch{
+        taskList.forEach {task->
+            calanderRepository.upsertTaskFromDb(task)
+        }
+    }
+
+    fun deleteDailyTask(task: Task) = viewModelScope.launch {
+        calanderRepository.deleteTaskFromDb(task)
+    }
+
+    fun getAllTasks() = calanderRepository.getSavedArticlesFromDb()
 }

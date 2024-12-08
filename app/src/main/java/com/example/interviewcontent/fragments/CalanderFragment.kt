@@ -17,6 +17,7 @@ import com.example.interviewcontent.R
 import com.example.interviewcontent.adapters.CustomCalenderViewAdapter
 import com.example.interviewcontent.adapters.MonthViewAdapter
 import com.example.interviewcontent.databinding.FragmentCalanderBinding
+import com.example.interviewcontent.models.Task
 import com.example.interviewcontent.resources.Resources
 import com.example.interviewcontent.viewmodel.CalanderViewModel
 import java.util.Calendar
@@ -74,6 +75,13 @@ class CalanderFragment : Fragment(R.layout.fragment_calander), View.OnClickListe
                 is Resources.Success -> {
                     hideProgressBar()
                     if(response.data !=null){
+                        val taskListFromDb = viewModel.getAllTasks().value
+                        if (taskListFromDb !=null && taskListFromDb.isNotEmpty()){
+
+                        }else{
+
+                        }
+
                         val monthViewAdapter = MonthViewAdapter(response.data)
                         binding.dailyTaskRv.layoutManager = LinearLayoutManager(context)
                     }else{

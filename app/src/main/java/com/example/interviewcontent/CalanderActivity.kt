@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import com.example.interviewcontent.databinding.ActivityMainBinding
+import com.example.interviewcontent.db.DailyTaskDatabase
 import com.example.interviewcontent.fragments.CalanderFragment
 import com.example.interviewcontent.repository.CalanderRepository
 import com.example.interviewcontent.util.CalanderViewModelProvider
@@ -23,7 +24,7 @@ class CalanderActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        val repository = CalanderRepository()
+        val repository = CalanderRepository(DailyTaskDatabase.invoke(this))
         val calenderViewModelFactory = CalanderViewModelProvider(repository)
         calanderViewModel = ViewModelProvider(this,calenderViewModelFactory).get(CalanderViewModel::class.java)
         val fragmentManager: FragmentManager = supportFragmentManager

@@ -66,41 +66,22 @@ class CalanderFragment : Fragment(R.layout.fragment_calander), View.OnClickListe
             binding.customCalendarView.adapter = CustomCalenderViewAdapter(it,activity)
         }
 
-//        val taskList = createDummyTaskList()
-//        val monthViewAdapter = MonthViewAdapter(taskList)
-//        binding.dailyTaskRv.layoutManager = LinearLayoutManager(context)
-//        binding.dailyTaskRv.adapter = monthViewAdapter
-
-
         viewModel.taskList.observe(viewLifecycleOwner){response->
             when(response){
                 is Resources.Error -> {
-//                    hideProgressBar()
+                   hideProgressBar()
                     if(response.message!=null){
                         Toast.makeText(activity,"Error occured", Toast.LENGTH_LONG)
                     }
                 }
-                is Resources.Loading -> {
-                    Log.d("loading", "setLiveDataObservers: ")
-                /*showProgressBar()*/}
+                is Resources.Loading -> { showProgressBar()}
                 is Resources.Success -> {
-                    /*hideProgressBar()*/
+                    hideProgressBar()
                     if(response.data !=null) {
-
-//                        val taskList = createDummyTaskList()
                         val monthViewAdapter = MonthViewAdapter(response.data!!)
                         binding.dailyTaskRv.layoutManager = LinearLayoutManager(context)
                         binding.dailyTaskRv.adapter = monthViewAdapter
                     }
-//                    }else{
-//
-//                    }
-
-//                    val monthViewAdapter = MonthViewAdapter(taskList = )
-//                    binding.dailyTaskRv.layoutManager = LinearLayoutManager(context)
-                    Log.d("-----------", "we are here: ")
-
-
                 }
             }
         }
@@ -114,7 +95,6 @@ class CalanderFragment : Fragment(R.layout.fragment_calander), View.OnClickListe
 
     override fun onClick(view: View?) {
         when (view?.id) {
-//            R.id.add_icon -> viewModel.addDailyTask(selectedDate, taskToAdd)
             R.id.add_icon-> {
                 val taskBottomSheetDialog = TaskBottomSheetDialog(
                     requireContext(),
@@ -163,38 +143,15 @@ class CalanderFragment : Fragment(R.layout.fragment_calander), View.OnClickListe
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
+
+
     }
 
-    private fun createDummyTaskList(): CalenderResponse {
-        val tasks = listOf(
-            Task(
-                task_detail = TaskDetail(
-                    date = "2024-12-01",
-                    description = "Description for Task 1",
-                    task_id = 1,
-                    title = "Task 1"
-                ),
-                task_id = 1
-            ),
-            Task(
-                task_detail = TaskDetail(
-                    date = "2024-12-02",
-                    description = "Description for Task 2",
-                    task_id = 2,
-                    title = "Task 2"
-                ),
-                task_id = 2
-            ),
-            Task(
-                task_detail = TaskDetail(
-                    date = "2024-12-03",
-                    description = "Description for Task 3",
-                    task_id = 3,
-                    title = "Task 3"
-                ),
-                task_id = 3
-            )
-        )
-        return CalenderResponse(tasks = tasks)
+    private fun hideProgressBar() {
+        binding.loaderContainer.visibility = View.GONE
+    }
+
+    private fun showProgressBar() {
+        binding.loaderContainer.visibility = View.VISIBLE
     }
 }

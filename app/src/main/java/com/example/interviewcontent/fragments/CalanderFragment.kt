@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Spinner
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -55,7 +54,7 @@ class CalanderFragment : Fragment(R.layout.fragment_calander), View.OnClickListe
         }
         viewModel.mDaysList.observe(viewLifecycleOwner) {
             binding.customCalendarView.layoutManager = GridLayoutManager(context, 7)
-            binding.customCalendarView.adapter = CustomCalenderViewAdapter(it)
+            binding.customCalendarView.adapter = CustomCalenderViewAdapter(it,activity)
         }
     }
 

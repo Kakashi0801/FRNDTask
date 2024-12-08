@@ -34,7 +34,7 @@ class CalanderViewModel(val calanderRepository: CalanderRepository) : ViewModel(
 
 
     init {
-//        submitDailyTask(123,taskDetail)
+        getTaskList(123)
     }
     fun addDailyTask(date: String, title: String?) {
         // Implement functionality to add a task

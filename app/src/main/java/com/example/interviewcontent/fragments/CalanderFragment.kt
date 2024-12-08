@@ -1,6 +1,7 @@
 package com.example.interviewcontent.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,9 @@ import com.example.interviewcontent.R
 import com.example.interviewcontent.adapters.CustomCalenderViewAdapter
 import com.example.interviewcontent.adapters.MonthViewAdapter
 import com.example.interviewcontent.databinding.FragmentCalanderBinding
+import com.example.interviewcontent.models.CalenderResponse
+import com.example.interviewcontent.models.Task
+import com.example.interviewcontent.models.TaskDetail
 import com.example.interviewcontent.resources.Resources
 import com.example.interviewcontent.viewmodel.CalanderViewModel
 import java.util.Calendar
@@ -62,6 +66,12 @@ class CalanderFragment : Fragment(R.layout.fragment_calander), View.OnClickListe
             binding.customCalendarView.adapter = CustomCalenderViewAdapter(it,activity)
         }
 
+//        val taskList = createDummyTaskList()
+//        val monthViewAdapter = MonthViewAdapter(taskList)
+//        binding.dailyTaskRv.layoutManager = LinearLayoutManager(context)
+//        binding.dailyTaskRv.adapter = monthViewAdapter
+
+
         viewModel.taskList.observe(viewLifecycleOwner){response->
             when(response){
                 is Resources.Error -> {
@@ -70,15 +80,27 @@ class CalanderFragment : Fragment(R.layout.fragment_calander), View.OnClickListe
                         Toast.makeText(activity,"Error occured", Toast.LENGTH_LONG)
                     }
                 }
-                is Resources.Loading -> { /*showProgressBar()*/}
+                is Resources.Loading -> {
+                    Log.d("loading", "setLiveDataObservers: ")
+                /*showProgressBar()*/}
                 is Resources.Success -> {
                     /*hideProgressBar()*/
-                    if(response.data !=null){
-                        val monthViewAdapter = MonthViewAdapter(response.data)
-                        binding.dailyTaskRv.layoutManager = LinearLayoutManager(context)
-                    }else{
+                    if(response.data !=null) {
 
+//                        val taskList = createDummyTaskList()
+                        val monthViewAdapter = MonthViewAdapter(response.data!!)
+                        binding.dailyTaskRv.layoutManager = LinearLayoutManager(context)
+                        binding.dailyTaskRv.adapter = monthViewAdapter
                     }
+//                    }else{
+//
+//                    }
+
+//                    val monthViewAdapter = MonthViewAdapter(taskList = )
+//                    binding.dailyTaskRv.layoutManager = LinearLayoutManager(context)
+                    Log.d("-----------", "we are here: ")
+
+
                 }
             }
         }
@@ -109,26 +131,21 @@ class CalanderFragment : Fragment(R.layout.fragment_calander), View.OnClickListe
     }
 
     private fun setupSpinners() {
-        // Populate Month Spinner
         val months = resources.getStringArray(R.array.months) // Define the months in strings.xml
         val monthAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, months)
         monthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.monthLabel.adapter = monthAdapter
 
-        // Populate Year Spinner (1975 to 2075)
         val years = (1975..2075).toList()
         val yearAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, years)
         yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.yearLabel.adapter = yearAdapter
 
-        // Set default selection
         binding.monthLabel.setSelection(mSelectedMonth)
         binding.yearLabel.setSelection(years.indexOf(mSelectedYear))
 
-        // Trigger initial data load
         viewModel.generateDaysForMonth(mSelectedYear, mSelectedMonth)
 
-        // Set listeners for item selection on spinners
         binding.monthLabel.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 mSelectedMonth = position
@@ -146,5 +163,38 @@ class CalanderFragment : Fragment(R.layout.fragment_calander), View.OnClickListe
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
+    }
+
+    private fun createDummyTaskList(): CalenderResponse {
+        val tasks = listOf(
+            Task(
+                task_detail = TaskDetail(
+                    date = "2024-12-01",
+                    description = "Description for Task 1",
+                    task_id = 1,
+                    title = "Task 1"
+                ),
+                task_id = 1
+            ),
+            Task(
+                task_detail = TaskDetail(
+                    date = "2024-12-02",
+                    description = "Description for Task 2",
+                    task_id = 2,
+                    title = "Task 2"
+                ),
+                task_id = 2
+            ),
+            Task(
+                task_detail = TaskDetail(
+                    date = "2024-12-03",
+                    description = "Description for Task 3",
+                    task_id = 3,
+                    title = "Task 3"
+                ),
+                task_id = 3
+            )
+        )
+        return CalenderResponse(tasks = tasks)
     }
 }

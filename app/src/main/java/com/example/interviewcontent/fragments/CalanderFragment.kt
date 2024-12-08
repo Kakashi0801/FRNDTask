@@ -7,13 +7,17 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.interviewcontent.CalanderActivity
 import com.example.interviewcontent.R
 import com.example.interviewcontent.adapters.CustomCalenderViewAdapter
+import com.example.interviewcontent.adapters.MonthViewAdapter
 import com.example.interviewcontent.databinding.FragmentCalanderBinding
+import com.example.interviewcontent.resources.Resources
 import com.example.interviewcontent.viewmodel.CalanderViewModel
 import java.util.Calendar
 
@@ -43,7 +47,7 @@ class CalanderFragment : Fragment(R.layout.fragment_calander), View.OnClickListe
         viewModel = (activity as CalanderActivity).calanderViewModel
         setClickListeners()
         setLiveDataObservers()
-        setupSpinners() // Initialize spinners here
+        setupSpinners()
     }
 
     private fun setLiveDataObservers() {
@@ -56,6 +60,27 @@ class CalanderFragment : Fragment(R.layout.fragment_calander), View.OnClickListe
         viewModel.mDaysList.observe(viewLifecycleOwner) {
             binding.customCalendarView.layoutManager = GridLayoutManager(context, 7)
             binding.customCalendarView.adapter = CustomCalenderViewAdapter(it)
+        }
+
+        viewModel.taskList.observe(viewLifecycleOwner){response->
+            when(response){
+                is Resources.Error -> {
+//                    hideProgressBar()
+                    if(response.message!=null){
+                        Toast.makeText(activity,"Error occured", Toast.LENGTH_LONG)
+                    }
+                }
+                is Resources.Loading -> { /*showProgressBar()*/}
+                is Resources.Success -> {
+                    /*hideProgressBar()*/
+                    if(response.data !=null){
+                        val monthViewAdapter = MonthViewAdapter(response.data)
+                        binding.dailyTaskRv.layoutManager = LinearLayoutManager(context)
+                    }else{
+
+                    }
+                }
+            }
         }
     }
 

@@ -66,7 +66,17 @@ class CalanderFragment : Fragment(R.layout.fragment_calander), View.OnClickListe
 
     override fun onClick(view: View?) {
         when (view?.id) {
-            R.id.add_icon -> viewModel.addDailyTask(selectedDate, taskToAdd)
+//            R.id.add_icon -> viewModel.addDailyTask(selectedDate, taskToAdd)
+            R.id.add_icon-> {
+                val taskBottomSheetDialog = TaskBottomSheetDialog(
+                    requireContext(),
+                    viewModel // Pass the viewModel directly
+                ) { task ->
+                    taskToAdd = task
+                    viewModel.addDailyTask(selectedDate, task)
+                }
+                taskBottomSheetDialog.show()
+            }
             R.id.left_arrow -> viewModel.changeTheCalenderView(true, mSelectedYear, mSelectedMonth)
             R.id.right_arrow -> viewModel.changeTheCalenderView(false, mSelectedYear, mSelectedMonth)
         }

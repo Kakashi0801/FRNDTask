@@ -4,8 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:background="@drawable/bg_task_item"
-    android:padding="12dp"
-    android:marginBottom="8dp">
+    android:padding="12dp">
 
     <!-- Task Name -->
     <TextView

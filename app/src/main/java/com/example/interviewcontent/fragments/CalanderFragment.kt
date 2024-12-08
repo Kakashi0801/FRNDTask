@@ -1,6 +1,7 @@
 package com.example.interviewcontent.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +18,9 @@ import com.example.interviewcontent.R
 import com.example.interviewcontent.adapters.CustomCalenderViewAdapter
 import com.example.interviewcontent.adapters.MonthViewAdapter
 import com.example.interviewcontent.databinding.FragmentCalanderBinding
+import com.example.interviewcontent.models.CalenderResponse
 import com.example.interviewcontent.models.Task
+import com.example.interviewcontent.models.TaskDetail
 import com.example.interviewcontent.resources.Resources
 import com.example.interviewcontent.viewmodel.CalanderViewModel
 import java.util.Calendar
@@ -74,18 +77,10 @@ class CalanderFragment : Fragment(R.layout.fragment_calander), View.OnClickListe
                 is Resources.Loading -> { showProgressBar()}
                 is Resources.Success -> {
                     hideProgressBar()
-                    if(response.data !=null){
-                        val taskListFromDb = viewModel.getAllTasks().value
-                        if (taskListFromDb !=null && taskListFromDb.isNotEmpty()){
-
-                        }else{
-
-                        }
-
-                        val monthViewAdapter = MonthViewAdapter(response.data)
+                    if(response.data !=null) {
+                        val monthViewAdapter = MonthViewAdapter(response.data!!)
                         binding.dailyTaskRv.layoutManager = LinearLayoutManager(context)
-                    }else{
-
+                        binding.dailyTaskRv.adapter = monthViewAdapter
                     }
                 }
             }
